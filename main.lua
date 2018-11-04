@@ -12,8 +12,9 @@ local player = {
 		local tx = math.abs(self.v.x) > 0 and self.points * math.abs(self.v.x) / self.v.x or 0
 		local ty = math.abs(self.v.y) > 0 and self.points * math.abs(self.v.y) / self.v.y or 0
 		print(tx, ty)
-		self.x = (self.x + (self.v.x + tx) * dt) % 64
-		self.y = (self.y + (self.v.y + ty) * dt) % 48
+		-- self.x = (self.x + (self.v.x + tx) * dt) % 64
+		-- self.y = (self.y + (self.v.y + ty) * dt) % 48
+		move(self, dt, tx, ty)
 	end,
 
 	score = function(self)
@@ -34,6 +35,25 @@ local cookie = {
 	spawn = function(self)
 		self.x = math.random(0, 64 - 1)
 		self.y = math.random(0, 48 - 1)
+	end,
+}
+local bullets = {
+	all = {},
+	spawn = function(self, x, y, vx, vy)
+		local bullet = {
+			x = x,
+			y = y,
+			v = {x = vx, y = vy},
+			s = 1,
+			c = {250, 0, 0, 255},
+		}
+		table.insert(self.all, bullet)
+	end,
+
+	update = function(self, dt)
+		for i,b in ipairs(self.all) do
+			move(b, dt)
+		end
 	end,
 }
 local grid = {
@@ -75,6 +95,9 @@ local grid = {
 		end
 		self:set_tile(cookie.x, cookie.y, cookie.s, cookie.c)
 		self:set_tile(get_x(player), get_y(player), player.s, player.c)
+		for i, b in ipairs(bullets.all) do
+			self:set_tile(get_x(b), get_y(b), b.s, b.c)
+		end
 	end,
 
 	draw = function(self)
@@ -111,6 +134,13 @@ function lerp(r, t, a)
 	}
 end
 
+function move(o, dt, tx, ty)
+	tx = tx or 0
+	ty = ty or 0
+	o.x = (o.x + (o.v.x + tx) * dt) % 64
+	o.y = (o.y + (o.v.y + ty) * dt) % 48
+end
+
 function collides(a, b)
 	if get_x(a) == get_x(b) and get_y(a) == get_y(b) then
 		return true
@@ -122,7 +152,18 @@ function check_cookie_eaten()
 	if collides(player, cookie) then
 		player:score()
 		cookie:spawn()
+		spawn_bullet()
 	end
+end
+
+function spawn_bullet()
+	local vx = player.v.y
+	local vy = -player.v.x
+	local x = player.x + (math.abs(vx) > 0 and math.abs(vx) / vx * 2 or 0)
+	local y = player.y + (math.abs(vy) > 0 and math.abs(vy) / vy * 2 or 0)
+	-- print('spawning bullet at ', x, y, vx, vy)
+	-- print('player', player.x, player.y, player.v.x, player.v.y)
+	bullets:spawn(x, y, vx, vy)
 end
 
 function love.load()
@@ -152,6 +193,7 @@ function love.update(dt)
 	cookie:update(dt)
 	player:update(dt)
 	check_cookie_eaten()
+	bullets:update(dt)
 	grid:update(dt)
 end
 
