@@ -156,6 +156,14 @@ function check_cookie_eaten()
 	end
 end
 
+function check_player_hit()
+	for i, b in ipairs(bullets.all) do
+		if collides(player, b) then
+			print('player hit')
+		end
+	end
+end
+
 function spawn_bullet()
 	local vx = player.v.y
 	local vy = -player.v.x
@@ -194,6 +202,7 @@ function love.update(dt)
 	player:update(dt)
 	check_cookie_eaten()
 	bullets:update(dt)
+	check_player_hit()
 	grid:update(dt)
 end
 
