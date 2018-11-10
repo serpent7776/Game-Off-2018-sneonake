@@ -13,9 +13,11 @@ local player = {
 	invul_time = 0.5,
 
 	update = function(self, dt)
-		local tx = math.abs(self.v.x) > 0 and self.points * math.abs(self.v.x) / self.v.x or 0
-		local ty = math.abs(self.v.y) > 0 and self.points * math.abs(self.v.y) / self.v.y or 0
-		move(self, dt, tx, ty)
+		if self:is_alive() then
+			local tx = math.abs(self.v.x) > 0 and self.points * math.abs(self.v.x) / self.v.x or 0
+			local ty = math.abs(self.v.y) > 0 and self.points * math.abs(self.v.y) / self.v.y or 0
+			move(self, dt, tx, ty)
+		end
 	end,
 
 	score = function(self)
@@ -30,6 +32,10 @@ local player = {
 			print('player hit at', time, ' ', self.lives, 'left')
 		end
 	end,
+
+	is_alive = function(self)
+		return self.lives > 0
+	end
 }
 local cookie = {
 	x = 48,
@@ -103,7 +109,9 @@ local grid = {
 			end
 		end
 		self:set_tile(cookie.x, cookie.y, cookie.s, cookie.c)
-		self:set_tile(get_x(player), get_y(player), player.s, player.c)
+		if player:is_alive() then
+			self:set_tile(get_x(player), get_y(player), player.s, player.c)
+		end
 		for i, b in ipairs(bullets.all) do
 			self:set_tile(get_x(b), get_y(b), b.s, b.c)
 		end
@@ -168,7 +176,10 @@ function check_cookie_eaten()
 	end
 end
 
-function check_player_hit()
+function check_player_hit(self)
+	if not player:is_alive() then
+		return
+	end
 	for i, b in ipairs(bullets.all) do
 		if collides(player, b) then
 			player:hit()
@@ -193,6 +204,9 @@ function love.load()
 end
 
 function love.keypressed(key, scancode, isRepeat)
+	if not player:is_alive() then
+		return
+	end
 	if key == 'up' and player.v.y <= 0 then
 		player.v.x = 0
 		player.v.y = -player.vmax
