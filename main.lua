@@ -142,7 +142,7 @@ function get_x(o)
 end
 
 function get_y(o)
-	return math.floor(o.y + 0.5) % 64
+	return math.floor(o.y + 0.5) % 48
 end
 
 function lerp(r, t, a)
