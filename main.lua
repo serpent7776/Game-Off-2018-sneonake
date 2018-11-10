@@ -12,9 +12,6 @@ local player = {
 	update = function(self, dt)
 		local tx = math.abs(self.v.x) > 0 and self.points * math.abs(self.v.x) / self.v.x or 0
 		local ty = math.abs(self.v.y) > 0 and self.points * math.abs(self.v.y) / self.v.y or 0
-		print(tx, ty)
-		-- self.x = (self.x + (self.v.x + tx) * dt) % 64
-		-- self.y = (self.y + (self.v.y + ty) * dt) % 48
 		move(self, dt, tx, ty)
 	end,
 
