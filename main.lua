@@ -99,7 +99,10 @@ local grid = {
 	end,
 
 	draw = function(self)
-		local c = {0, 48/255, 0, 255/C}
+		local bg1_c = {0, 48/255, 0, 255/C, 1}
+		local bg2_c = {0, 200/255, 0, 200/C, 1}
+		local s = math.sin(time * 3) / 2 + 0.5
+		local c = lerp(bg1_c, bg2_c, s)
 		for y=0, 48 do
 			for x=0, 64 do
 				local t = self:tile(x, y)
