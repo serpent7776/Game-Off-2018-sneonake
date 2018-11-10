@@ -195,8 +195,6 @@ function spawn_bullet()
 	local vy = -player.v.x
 	local x = player.x + (math.abs(vx) > 0 and math.abs(vx) / vx * 2 or 0)
 	local y = player.y + (math.abs(vy) > 0 and math.abs(vy) / vy * 2 or 0)
-	-- print('spawning bullet at ', x, y, vx, vy)
-	-- print('player', player.x, player.y, player.v.x, player.v.y)
 	bullets:spawn(x, y, vx, vy)
 end
 
