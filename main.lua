@@ -1,4 +1,5 @@
 local time
+local sounds = {}
 local C = 255
 local player = {
 	x = 32,
@@ -173,6 +174,7 @@ function check_cookie_eaten()
 		player:score()
 		cookie:spawn()
 		spawn_bullet()
+		sounds.cookie_eaten:play()
 	end
 end
 
@@ -183,6 +185,7 @@ function check_player_hit(self)
 	for i, b in ipairs(bullets.all) do
 		if collides(player, b) then
 			player:hit()
+			sounds.player_hit:play()
 		end
 	end
 end
@@ -197,10 +200,18 @@ function spawn_bullet()
 	bullets:spawn(x, y, vx, vy)
 end
 
+function load_sounds()
+	sounds = {
+		player_hit = love.audio.newSource('hit.ogg', 'static'),
+		cookie_eaten = love.audio.newSource('cookie.ogg', 'static'),
+	}
+end
+
 function love.load()
 	time = 0
 	math.randomseed(os.time())
 	grid:load()
+	load_sounds()
 end
 
 function love.keypressed(key, scancode, isRepeat)
