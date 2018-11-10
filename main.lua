@@ -1,9 +1,10 @@
 local time
+local C = 255
 local player = {
 	x = 32,
 	y = 24,
 	s = 1,
-	c = {0, 255, 0, 255},
+	c = {0, 255/C, 0, 255/C},
 	v = {x = 12, y = 0},
 	vmax = 12,
 	points = 0,
@@ -26,7 +27,7 @@ local cookie = {
 	x = 48,
 	y = 24,
 	s = 0.75,
-	c = {0, 250, 250, 255},
+	c = {0, 250/C, 250/C, 255/C},
 
 	update = function(self, dt)
 		self.s = 1 / math.max(0.5, math.cos(time * 3)) / 2 * 0.75
@@ -45,7 +46,7 @@ local bullets = {
 			y = y,
 			v = {x = vx, y = vy},
 			s = 1,
-			c = {250, 0, 0, 255},
+			c = {250/C, 0, 0, 255/C},
 		}
 		table.insert(self.all, bullet)
 	end,
@@ -64,7 +65,7 @@ local grid = {
 			for x=0, 64 do
 				self.tiles[y * 64 + x] = {
 					s = 0,
-					c = {0, 0, 0, 255},
+					c = {0, 0, 0, 255/C},
 				}
 			end
 		end
@@ -101,7 +102,7 @@ local grid = {
 	end,
 
 	draw = function(self)
-		local c = {0, 48, 0, 255}
+		local c = {0, 48/255, 0, 255/C}
 		for y=0, 48 do
 			for x=0, 64 do
 				local t = self:tile(x, y)
