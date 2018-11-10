@@ -8,6 +8,9 @@ local player = {
 	v = {x = 12, y = 0},
 	vmax = 12,
 	points = 0,
+	lives = 3,
+	last_hit_time = 0,
+	invul_time = 0.5,
 
 	update = function(self, dt)
 		local tx = math.abs(self.v.x) > 0 and self.points * math.abs(self.v.x) / self.v.x or 0
@@ -18,6 +21,14 @@ local player = {
 	score = function(self)
 		self.points = self.points + 1
 		print('score', self.points)
+	end,
+
+	hit = function(self)
+		if time > self.last_hit_time + self.invul_time then
+			self.lives = self.lives - 1
+			self.last_hit_time = time
+			print('player hit at', time, ' ', self.lives, 'left')
+		end
 	end,
 }
 local cookie = {
@@ -160,7 +171,7 @@ end
 function check_player_hit()
 	for i, b in ipairs(bullets.all) do
 		if collides(player, b) then
-			print('player hit')
+			player:hit()
 		end
 	end
 end
