@@ -157,16 +157,12 @@ local grid = {
 
 }
 
-function round(x)
-	return math.floor(x + 0.5)
-end
-
 function get_x(o)
-	return round(o.x) % 64
+	return math.floor(o.x) % 64
 end
 
 function get_y(o)
-	return round(o.y) % 48
+	return math.floor(o.y) % 48
 end
 
 function lerp(r, t, a)
@@ -180,7 +176,9 @@ function lerp(r, t, a)
 end
 
 function minmaxp1(x, y)
-	return math.min(x, y), math.max(x, y) + 0.5
+	local min = math.min(x, y)
+	local max = math.max(x, y)
+	return math.floor(min), math.floor(max)
 end
 
 function move(o, dt, tx, ty)
