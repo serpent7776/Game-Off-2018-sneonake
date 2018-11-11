@@ -1,5 +1,3 @@
-local bump = require 'bump/bump'
-
 local time
 local sounds = {}
 local C = 255
