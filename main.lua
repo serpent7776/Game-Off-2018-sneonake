@@ -26,12 +26,14 @@ local player = {
 		print('score', self.points)
 	end,
 
+	is_invul = function(self)
+		return time < self.last_hit_time + self.invul_time
+	end,
+
 	hit = function(self)
-		if time > self.last_hit_time + self.invul_time then
-			self.lives = self.lives - 1
-			self.last_hit_time = time
-			print('player hit at', time, ' ', self.lives, 'left')
-		end
+		self.lives = self.lives - 1
+		self.last_hit_time = time
+		print('player hit at', time, ' ', self.lives, 'left')
 	end,
 
 	is_alive = function(self)
@@ -183,7 +185,7 @@ function check_player_hit(self)
 		return
 	end
 	for i, b in ipairs(bullets.all) do
-		if collides(player, b) then
+		if collides(player, b) and not player:is_invul() then
 			player:hit()
 			sounds.player_hit:play()
 		end

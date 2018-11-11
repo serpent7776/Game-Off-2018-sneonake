@@ -1,0 +1,6 @@
+[submodule "mlib"]
+	path = mlib
+	url = https://github.com/davisdude/mlib.git
+[submodule "bump"]
+	path = bump
+	url = https://github.com/kikito/bump.lua.git
