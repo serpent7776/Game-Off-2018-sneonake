@@ -1,6 +1,8 @@
 local shack = require('lib/shack/shack')
+local wave = require('lib/wave/wave')
 
 local time
+local music
 local sounds = {}
 local C = 255
 local player = {
@@ -238,6 +240,14 @@ function spawn_bullet()
 	bullets:spawn(x, y, vx + tx, vy + ty)
 end
 
+function load_music()
+	music = wave:newSource('snake.ogg', 'stream')
+	music:setLooping(true)
+	music:setVolume(0.44)
+	music:parse()
+	music:play()
+end
+
 function load_sounds()
 	sounds = {
 		player_hit = love.audio.newSource('hit.ogg', 'static'),
@@ -254,6 +264,7 @@ function love.load()
 	time = 0
 	math.randomseed(os.time())
 	grid:load()
+	load_music()
 	load_sounds()
 	load_shack()
 end
@@ -279,6 +290,7 @@ end
 
 function love.update(dt)
 	time = time + dt
+	music:update(dt)
 	cookie:update(dt)
 	player:update(dt)
 	bullets:update(dt)

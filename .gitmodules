@@ -7,3 +7,6 @@
 [submodule "lib/shack"]
 	path = lib/shack
 	url = https://github.com/Ulydev/shack.git
+[submodule "lib/wave"]
+	path = lib/wave
+	url = https://github.com/Ulydev/wave.git
