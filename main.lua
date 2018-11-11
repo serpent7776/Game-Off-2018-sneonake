@@ -1,3 +1,5 @@
+local shack = require('lib/shack/shack')
+
 local time
 local sounds = {}
 local C = 255
@@ -37,6 +39,7 @@ local player = {
 	hit = function(self)
 		self.lives = self.lives - 1
 		self.last_hit_time = time
+		shack:setShake(20)
 	end,
 
 	is_alive = function(self)
@@ -192,7 +195,7 @@ function collides(a, b)
 	local aymin, aymax = minmaxp1(a.curr_y, a.prev_y)
 	local bxmin, bxmax = minmaxp1(b.curr_x, b.prev_x)
 	local bymin, bymax = minmaxp1(b.curr_y, b.prev_y)
-	local intersect = 
+	local intersect =
 		axmax >= bxmin and
 		axmin <= bxmax and
 		aymin <= bymax and
@@ -239,11 +242,17 @@ function load_sounds()
 	}
 end
 
+function load_shack()
+	local width, height = love.graphics.getDimensions()
+	shack:setDimensions(width, height)
+end
+
 function love.load()
 	time = 0
 	math.randomseed(os.time())
 	grid:load()
 	load_sounds()
+	load_shack()
 end
 
 function love.keypressed(key, scancode, isRepeat)
@@ -273,8 +282,10 @@ function love.update(dt)
 	check_cookie_eaten()
 	check_player_hit()
 	grid:update(dt)
+	shack:update(dt)
 end
 
 function love:draw()
+	shack:apply()
 	grid:draw()
 end
