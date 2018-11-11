@@ -157,12 +157,16 @@ local grid = {
 
 }
 
+function round(x)
+	return math.floor(x + 0.5)
+end
+
 function get_x(o)
-	return math.floor(o.x + 0.5) % 64
+	return round(o.x) % 64
 end
 
 function get_y(o)
-	return math.floor(o.y + 0.5) % 48
+	return round(o.y) % 48
 end
 
 function lerp(r, t, a)
