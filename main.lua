@@ -40,6 +40,7 @@ local player = {
 		self.lives = self.lives - 1
 		self.last_hit_time = time
 		shack:setShake(20)
+		shack:setRotation(0.16)
 	end,
 
 	is_alive = function(self)
@@ -211,6 +212,7 @@ function check_cookie_eaten()
 		cookie:spawn()
 		spawn_bullet()
 		sounds.cookie_eaten:play()
+		shack:setScale(1.02)
 	end
 end
 
