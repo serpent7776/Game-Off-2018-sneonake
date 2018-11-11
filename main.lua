@@ -200,10 +200,7 @@ function collides(a, b)
 		axmin <= bxmax and
 		aymin <= bymax and
 		aymax >= bymin
-	if intersect then
-		return true
-	end
-	return false
+	return intersect
 end
 
 function check_cookie_eaten()
