@@ -233,7 +233,9 @@ function spawn_bullet()
 	local vy = -player.v.x
 	local x = player.x + (math.abs(vx) > 0 and math.abs(vx) / vx * 2 or 0)
 	local y = player.y + (math.abs(vy) > 0 and math.abs(vy) / vy * 2 or 0)
-	bullets:spawn(x, y, vx, vy)
+	local tx = math.abs(vx) > 0 and player.points * math.abs(vx) / vx or 0
+	local ty = math.abs(vy) > 0 and player.points * math.abs(vy) / vy or 0
+	bullets:spawn(x, y, vx + tx, vy + ty)
 end
 
 function load_sounds()
