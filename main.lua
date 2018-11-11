@@ -1,9 +1,15 @@
+local bump = require 'bump/bump'
+
 local time
 local sounds = {}
 local C = 255
 local player = {
 	x = 32,
 	y = 24,
+	curr_x = 32,
+	curr_y = 24,
+	prev_x = 32,
+	prev_y = 24,
 	s = 1,
 	c = {0, 255/C, 0, 255/C},
 	v = {x = 12, y = 0},
@@ -33,7 +39,6 @@ local player = {
 	hit = function(self)
 		self.lives = self.lives - 1
 		self.last_hit_time = time
-		print('player hit at', time, ' ', self.lives, 'left')
 	end,
 
 	is_alive = function(self)
@@ -43,6 +48,10 @@ local player = {
 local cookie = {
 	x = 48,
 	y = 24,
+	curr_x = 48,
+	curr_y = 24,
+	prev_x = 48,
+	prev_y = 24,
 	s = 0.75,
 	c = {0, 250/C, 250/C, 255/C},
 
@@ -53,6 +62,10 @@ local cookie = {
 	spawn = function(self)
 		self.x = math.random(0, 64 - 1)
 		self.y = math.random(0, 48 - 1)
+		self.curr_x = self.x
+		self.curr_y = self.y
+		self.prev_x = self.x
+		self.prev_y = self.y
 	end,
 }
 local bullets = {
@@ -61,6 +74,10 @@ local bullets = {
 		local bullet = {
 			x = x,
 			y = y,
+			curr_x = x,
+			curr_y = y,
+			prev_x = x,
+			prev_y = y,
 			v = {x = vx, y = vy},
 			s = 1,
 			c = {250/C, 0, 0, 255/C},
@@ -157,15 +174,32 @@ function lerp(r, t, a)
 	}
 end
 
+function minmaxp1(x, y)
+	return math.min(x, y), math.max(x, y) + 0.5
+end
+
 function move(o, dt, tx, ty)
 	tx = tx or 0
 	ty = ty or 0
-	o.x = (o.x + (o.v.x + tx) * dt) % 64
-	o.y = (o.y + (o.v.y + ty) * dt) % 48
+	o.prev_x = o.x
+	o.prev_y = o.y
+	o.curr_x = (o.x + (o.v.x + tx) * dt)
+	o.curr_y = (o.y + (o.v.y + ty) * dt)
+	o.x = o.curr_x % 64
+	o.y = o.curr_y % 48
 end
 
 function collides(a, b)
-	if get_x(a) == get_x(b) and get_y(a) == get_y(b) then
+	local axmin, axmax = minmaxp1(a.curr_x, a.prev_x)
+	local aymin, aymax = minmaxp1(a.curr_y, a.prev_y)
+	local bxmin, bxmax = minmaxp1(b.curr_x, b.prev_x)
+	local bymin, bymax = minmaxp1(b.curr_y, b.prev_y)
+	local intersect = 
+		axmax >= bxmin and
+		axmin <= bxmax and
+		aymin <= bymax and
+		aymax >= bymin
+	if intersect then
 		return true
 	end
 	return false
@@ -237,8 +271,8 @@ function love.update(dt)
 	time = time + dt
 	cookie:update(dt)
 	player:update(dt)
-	check_cookie_eaten()
 	bullets:update(dt)
+	check_cookie_eaten()
 	check_player_hit()
 	grid:update(dt)
 end
