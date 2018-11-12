@@ -279,9 +279,9 @@ function love.load()
 	target_beat = 1
 	math.randomseed(os.time())
 	grid:load()
-	load_music()
-	load_sounds()
 	load_shack()
+	load_sounds()
+	load_music()
 end
 
 function love.keypressed(key, scancode, isRepeat)
