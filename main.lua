@@ -62,7 +62,7 @@ local cookie = {
 	c = {0, 250/C, 250/C, 255/C},
 
 	update = function(self, dt)
-		self.s = 1 / math.max(0.5, math.cos(time * 3)) / 2 * 0.75
+		self.s = 0.76 - math.abs(beat - target_beat) / 2
 	end,
 
 	spawn = function(self)
