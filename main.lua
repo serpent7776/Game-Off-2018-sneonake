@@ -148,14 +148,14 @@ local grid = {
 		local bg1_c = {0, 48/C, 0, 255/C, 1}
 		local bg2_c = {0, 200/C, 0, 200/C, 1}
 		local s = beat
-		local c = lerp(bg1_c, bg2_c, s)
+		local c = clerp(bg1_c, bg2_c, s)
 		for y=0, 48 do
 			for x=0, 64 do
 				local t = self:tile(x, y)
 				local scale = t.s
 				local sz = 10 * scale + 5
 				local dd = scale * 5
-				love.graphics.setColor(lerp(c, t.c, t.s))
+				love.graphics.setColor(clerp(c, t.c, t.s))
 				love.graphics.rectangle('fill', x * 16 - dd + 5, y * 16 - dd + 5, sz, sz)
 			end
 		end
@@ -171,7 +171,7 @@ function get_y(o)
 	return math.floor(o.y) % 48
 end
 
-function lerp(r, t, a)
+function clerp(r, t, a)
 	local b = 1 - a
 	return {
 		r[1] * b + t[1] * a,
