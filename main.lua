@@ -1,6 +1,7 @@
 local shack = require('lib/shack/shack')
 local wave = require('lib/wave/wave')
 
+local tacc
 local time
 local beat
 local target_beat
@@ -274,6 +275,7 @@ function load_shack()
 end
 
 function love.load()
+	tacc = 0
 	time = 0
 	beat = 0
 	target_beat = 1
@@ -304,16 +306,21 @@ function love.keypressed(key, scancode, isRepeat)
 end
 
 function love.update(dt)
-	time = time + dt
-	beat = target_beat * dt * 3 + beat * (1 - dt * 3)
-	music:update(dt)
-	cookie:update(dt)
-	player:update(dt)
-	bullets:update(dt)
-	check_cookie_eaten()
-	check_player_hit()
-	grid:update(dt)
-	shack:update(dt)
+	local ut = 0.02
+	tacc = tacc + dt
+	while tacc > ut do
+		tacc = tacc - ut
+		time = time + ut
+		beat = target_beat * ut * 3 + beat * (1 - ut * 3)
+		music:update(ut)
+		cookie:update(ut)
+		player:update(ut)
+		bullets:update(ut)
+		check_cookie_eaten()
+		check_player_hit()
+		grid:update(ut)
+		shack:update(ut)
+	end
 end
 
 function love:draw()
