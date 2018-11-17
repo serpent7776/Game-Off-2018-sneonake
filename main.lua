@@ -98,6 +98,32 @@ local bullets = {
 		end
 	end,
 }
+local ripples = {
+	all = {},
+	count = 0,
+
+	spawn = function(self, x, y)
+		local r = {
+			x = x,
+			y = y,
+			r = 1,
+			v = 256,
+		}
+		table.insert(self.all, r)
+		self.count = self.count + 1
+	end,
+
+	update = function(self, dt)
+		for i, r in ipairs(self.all) do
+			r.r = r.r + dt * r.v
+			print(i, r.r)
+		end
+		if self.count > 0 and self.all[1].r > 80 then
+			table.remove(self.all, 1)
+			self.count = self.count - 1
+		end
+	end,
+}
 local grid = {
 
 	load = function(self)
@@ -129,10 +155,23 @@ local grid = {
 		return t
 	end,
 
+	lerp_tile = function(self, x, y, a, c)
+		local t = self:tile(x, y)
+		t.c = clerp(t.c, c, a)
+		t.s = lerp(t.s, a, a)
+		return t
+	end,
+
 	update = function(self, dt)
 		for y=0, 48 do
 			for x=0, 64 do
 				self:scale_tile(x, y, 0.98)
+				for i, r in ipairs(ripples.all) do
+					local d = distance(x, y, r.x, r.y)
+					local dmin, dmax = minmax(d, r.r)
+					local a = dmin / dmax
+					self:lerp_tile(x, y, a / 2, player.c)
+				end
 			end
 		end
 		self:set_tile(cookie.x, cookie.y, cookie.s, cookie.c)
@@ -171,6 +210,17 @@ function get_y(o)
 	return math.floor(o.y) % 48
 end
 
+function distance(x1, y1, x2, y2)
+	local x = math.pow(x2 - x1, 2)
+	local y = math.pow(y2 - y1, 2)
+	return math.sqrt(x + y)
+end
+
+function lerp(x, y, a)
+	local b = 1 - a
+	return x * b + y * a
+end
+
 function clerp(r, t, a)
 	local b = 1 - a
 	return {
@@ -179,6 +229,12 @@ function clerp(r, t, a)
 		r[3] * b + t[3] * a,
 		r[4] * b + t[4] * a,
 	}
+end
+
+function minmax(x, y)
+	local min = math.min(x, y)
+	local max = math.max(x, y)
+	return min, max
 end
 
 function minmaxp1(x, y)
@@ -214,6 +270,7 @@ end
 function check_cookie_eaten()
 	if collides(player, cookie) then
 		player:score()
+		ripples:spawn(cookie.x, cookie.y)
 		cookie:spawn()
 		spawn_bullet()
 		sounds.cookie_eaten:play()
@@ -316,6 +373,7 @@ function love.update(dt)
 		cookie:update(ut)
 		player:update(ut)
 		bullets:update(ut)
+		ripples:update(ut)
 		check_cookie_eaten()
 		check_player_hit()
 		grid:update(ut)
