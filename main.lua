@@ -154,27 +154,22 @@ local grid = {
 		return t
 	end,
 
-	lerp_tile_if = function(self, x, y, a, c, f)
+	lerp_tile = function(self, x, y, a, c)
 		local t = self:tile(x, y)
-		if f(t) then
-			t.c = clerp(t.c, c, a)
-			t.s = lerp(t.s, a, a)
-		end
+		t.c = clerp(t.c, c, a)
+		t.s = lerp(t.s, a, a)
 		return t
 	end,
 
 	update = function(self, dt)
-		local f = function(tile)
-			return tile.s < 0.30
-		end
 		for y=0, 48 do
 			for x=0, 64 do
 				self:scale_tile(x, y, 0.98)
 				for i, r in ipairs(ripples.all) do
 					local d = distance(x, y, r.x, r.y)
-					local dmin, dmax = minmax(d, r.r)
-					local a = dmin / dmax
-					self:lerp_tile_if(x, y, a / 2, player.c, f)
+					local dd = math.abs(d - r.r)
+					local a = 1 / (dd + 1)
+					self:lerp_tile(x, y, a, player.c)
 				end
 			end
 		end
@@ -215,9 +210,9 @@ function get_y(o)
 end
 
 function distance(x1, y1, x2, y2)
-	local x = math.pow(x2 - x1, 2)
-	local y = math.pow(y2 - y1, 2)
-	return math.sqrt(x + y)
+	local x = math.abs(x2 - x1)
+	local y = math.abs(y2 - y1)
+	return x + y
 end
 
 function lerp(x, y, a)
