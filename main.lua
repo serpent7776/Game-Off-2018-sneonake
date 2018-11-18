@@ -107,7 +107,7 @@ local ripples = {
 			x = x,
 			y = y,
 			r = 1,
-			v = 256,
+			v = 128,
 		}
 		table.insert(self.all, r)
 		self.count = self.count + 1
