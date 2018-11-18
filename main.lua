@@ -188,8 +188,8 @@ local grid = {
 	end,
 
 	draw = function(self)
-		local bg1_c = {0, 48/C, 0, 255/C, 1}
-		local bg2_c = {0, 200/C, 0, 200/C, 1}
+		local bg1_c = {0, 48/C, 0, 255/C}
+		local bg2_c = {0, 200/C, 0, 200/C}
 		local s = beat
 		local c = clerp(bg1_c, bg2_c, s)
 		for y=0, 48 do
