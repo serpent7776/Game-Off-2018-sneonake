@@ -312,6 +312,7 @@ function beat_handler()
 	else
 		target_beat = 1
 	end
+	shack:setScale(1.01)
 end
 
 function load_music()
