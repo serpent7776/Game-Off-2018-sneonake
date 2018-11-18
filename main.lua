@@ -1,6 +1,7 @@
 local shack = require('lib/shack/shack')
 local wave = require('lib/wave/wave')
 
+local WX, WY
 local tacc
 local time
 local beat
@@ -185,15 +186,17 @@ local grid = {
 		local bg1_c = {0, 48/C, 0, 255/C}
 		local bg2_c = {0, 200/C, 0, 200/C}
 		local s = beat
-		local c = clerp(bg1_c, bg2_c, s)
+		local bg_c = clerp(bg1_c, bg2_c, s)
+		local sz_max = WX / 64
+		local sz_max_m1 = sz_max - 1
 		for y=0, 48 do
 			for x=0, 64 do
 				local t = self:tile(x, y)
 				local scale = t.s
-				local sz = 10 * scale + 5
-				local dd = scale * 5
-				love.graphics.setColor(clerp(c, t.c, t.s))
-				love.graphics.rectangle('fill', x * 16 - dd + 5, y * 16 - dd + 5, sz, sz)
+				local sz = 2/3 * sz_max_m1 * scale + 1/3 * sz_max_m1
+				local dd = scale * 1/3 * sz_max_m1
+				love.graphics.setColor(clerp(bg_c, t.c, t.s))
+				love.graphics.rectangle('fill', x * sz_max - dd + 1/3 * sz_max_m1, y * sz_max - dd + 1/3 * sz_max_m1, sz, sz)
 			end
 		end
 	end,
@@ -335,6 +338,7 @@ function load_shack()
 end
 
 function love.load()
+	WX, WY = love.graphics.getDimensions()
 	tacc = 0
 	time = 0
 	beat = 0
