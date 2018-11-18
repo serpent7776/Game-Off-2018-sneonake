@@ -116,7 +116,6 @@ local ripples = {
 	update = function(self, dt)
 		for i, r in ipairs(self.all) do
 			r.r = r.r + dt * r.v
-			print(i, r.r)
 		end
 		if self.count > 0 and self.all[1].r > 80 then
 			table.remove(self.all, 1)
@@ -155,14 +154,19 @@ local grid = {
 		return t
 	end,
 
-	lerp_tile = function(self, x, y, a, c)
+	lerp_tile_if = function(self, x, y, a, c, f)
 		local t = self:tile(x, y)
-		t.c = clerp(t.c, c, a)
-		t.s = lerp(t.s, a, a)
+		if f(t) then
+			t.c = clerp(t.c, c, a)
+			t.s = lerp(t.s, a, a)
+		end
 		return t
 	end,
 
 	update = function(self, dt)
+		local f = function(tile)
+			return tile.s < 0.30
+		end
 		for y=0, 48 do
 			for x=0, 64 do
 				self:scale_tile(x, y, 0.98)
@@ -170,7 +174,7 @@ local grid = {
 					local d = distance(x, y, r.x, r.y)
 					local dmin, dmax = minmax(d, r.r)
 					local a = dmin / dmax
-					self:lerp_tile(x, y, a / 2, player.c)
+					self:lerp_tile_if(x, y, a / 2, player.c, f)
 				end
 			end
 		end
