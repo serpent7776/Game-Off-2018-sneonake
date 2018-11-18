@@ -26,8 +26,7 @@ local player = {
 
 	update = function(self, dt)
 		if self:is_alive() then
-			local tx = math.abs(self.v.x) > 0 and self.points * math.abs(self.v.x) / self.v.x or 0
-			local ty = math.abs(self.v.y) > 0 and self.points * math.abs(self.v.y) / self.v.y or 0
+			local tx, ty = get_turbo(self.v.x, self.v.y)
 			move(self, dt, tx, ty)
 		end
 	end,
@@ -289,13 +288,18 @@ function check_player_hit(self)
 	end
 end
 
+function get_turbo(vx, vy)
+	local tx = math.abs(vx) > 0 and player.points * 0.5 * math.abs(vx) / vx or 0
+	local ty = math.abs(vy) > 0 and player.points * 0.5 * math.abs(vy) / vy or 0
+	return tx, ty
+end
+
 function spawn_bullet()
 	local vx = player.v.y
 	local vy = -player.v.x
 	local x = player.x + (math.abs(vx) > 0 and math.abs(vx) / vx * 2 or 0)
 	local y = player.y + (math.abs(vy) > 0 and math.abs(vy) / vy * 2 or 0)
-	local tx = math.abs(vx) > 0 and player.points * math.abs(vx) / vx or 0
-	local ty = math.abs(vy) > 0 and player.points * math.abs(vy) / vy or 0
+	local tx, ty = get_turbo(vx, vy)
 	bullets:spawn(x, y, vx + tx, vy + ty)
 end
 
