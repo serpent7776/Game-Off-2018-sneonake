@@ -67,8 +67,8 @@ local cookie = {
 	end,
 
 	spawn = function(self)
-		self.x = math.random(0, 64 - 1)
-		self.y = math.random(0, 48 - 1)
+		self.x = love.math.random(0, 64 - 1)
+		self.y = love.math.random(0, 48 - 1)
 		self.curr_x = self.x
 		self.curr_y = self.y
 		self.prev_x = self.x
@@ -343,7 +343,6 @@ function love.load()
 	time = 0
 	beat = 0
 	target_beat = 1
-	math.randomseed(os.time())
 	grid:load()
 	load_shack()
 	load_sounds()
