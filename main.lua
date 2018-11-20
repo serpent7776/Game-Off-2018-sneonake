@@ -389,8 +389,8 @@ function love.update(dt)
 end
 
 function love:draw()
-	love.graphics.print('Score: ' .. player.points, 1, 1, 0, 2, 2, 0, 0, 0, 0)
-	love.graphics.translate(0, 31)
+	love.graphics.print('Score: ' .. player.points, 5, 1, 0, 1, 1)
+	love.graphics.translate(0, 16)
 	shack:apply()
 	grid:draw()
 	love.graphics.setColor(255/C, 255/C, 255/C, 255/C)
