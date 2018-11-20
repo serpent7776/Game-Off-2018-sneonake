@@ -4,6 +4,7 @@ local wave = require('lib/wave/wave')
 local WX, WY
 local tacc
 local time
+local game_time
 local beat
 local target_beat
 local music
@@ -347,6 +348,7 @@ end
 
 function reset()
 	time = 0
+	game_time = 0
 	player:reset()
 	bullets:reset()
 	cookie:reset()
@@ -400,10 +402,13 @@ function love.update(dt)
 		grid:update(ut)
 		shack:update(ut)
 	end
+	if player:is_alive() then
+		game_time = time
+	end
 end
 
 function love:draw()
-	local t = string.format('%.1f', time)
+	local t = string.format('%.1f', game_time)
 	love.graphics.print('Score: ' .. player.points, 5, 1, 0, 1, 1)
 	love.graphics.printf('Time: ' .. t, 700, 1, 95, 'right')
 	love.graphics.translate(0, 16)
