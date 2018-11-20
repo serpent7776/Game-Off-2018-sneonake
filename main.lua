@@ -366,7 +366,7 @@ end
 
 function love.keypressed(key, scancode, isRepeat)
 	if not player:is_alive() then
-		return
+		reset()
 	end
 	if key == 'up' and player.v.y <= 0 then
 		player.v.x = 0
