@@ -10,21 +10,6 @@ local music
 local sounds = {}
 local C = 255
 local player = {
-	x = 32,
-	y = 24,
-	curr_x = 32,
-	curr_y = 24,
-	prev_x = 32,
-	prev_y = 24,
-	s = 1,
-	c = {0, 255/C, 0, 255/C},
-	v = {x = 12, y = 0},
-	vmax = 12,
-	points = 0,
-	lives = 3,
-	last_hit_time = 0,
-	invul_time = 0.5,
-
 	update = function(self, dt)
 		if self:is_alive() then
 			local tx, ty = get_turbo(self.v.x, self.v.y)
@@ -50,18 +35,26 @@ local player = {
 
 	is_alive = function(self)
 		return self.lives > 0
-	end
+	end,
+
+	reset = function(self)
+		self.x = 32
+		self.y = 24
+		self.curr_x = 32
+		self.curr_y = 24
+		self.prev_x = 32
+		self.prev_y = 24
+		self.s = 1
+		self.c = {0, 255/C, 0, 255/C}
+		self.v = {x = 12, y = 0}
+		self.vmax = 12
+		self.points = 0
+		self.lives = 3
+		self.last_hit_time = 0
+		self.invul_time = 0.5
+	end,
 }
 local cookie = {
-	x = 48,
-	y = 24,
-	curr_x = 48,
-	curr_y = 24,
-	prev_x = 48,
-	prev_y = 24,
-	s = 0.75,
-	c = {0, 250/C, 250/C, 255/C},
-
 	update = function(self, dt)
 		self.s = 0.76 - math.abs(beat - target_beat) / 2
 	end,
@@ -74,9 +67,19 @@ local cookie = {
 		self.prev_x = self.x
 		self.prev_y = self.y
 	end,
+
+	reset = function(self)
+		self.x = 48
+		self.y = 24
+		self.curr_x = 48
+		self.curr_y = 24
+		self.prev_x = 48
+		self.prev_y = 24
+		self.s = 0.75
+		self.c = {0, 250/C, 250/C, 255/C}
+	end,
 }
 local bullets = {
-	all = {},
 	spawn = function(self, x, y, vx, vy)
 		local bullet = {
 			x = x,
@@ -96,6 +99,10 @@ local bullets = {
 		for i,b in ipairs(self.all) do
 			move(b, dt)
 		end
+	end,
+
+	reset = function(self)
+		self.all = {}
 	end,
 }
 local ripples = {
@@ -338,16 +345,23 @@ function load_shack()
 	shack:setDimensions(width, height)
 end
 
+function reset()
+	time = 0
+	player:reset()
+	bullets:reset()
+	cookie:reset()
+end
+
 function love.load()
 	WX, WY = love.graphics.getDimensions()
 	tacc = 0
-	time = 0
 	beat = 0
 	target_beat = 1
 	grid:load()
 	load_shack()
 	load_sounds()
 	load_music()
+	reset()
 end
 
 function love.keypressed(key, scancode, isRepeat)
