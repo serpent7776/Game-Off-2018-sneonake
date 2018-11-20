@@ -389,7 +389,9 @@ function love.update(dt)
 end
 
 function love:draw()
+	local t = string.format('%.1f', time)
 	love.graphics.print('Score: ' .. player.points, 5, 1, 0, 1, 1)
+	love.graphics.printf('Time: ' .. t, 700, 1, 95, 'right')
 	love.graphics.translate(0, 16)
 	shack:apply()
 	grid:draw()
