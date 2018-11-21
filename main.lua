@@ -9,7 +9,7 @@ local beat
 local target_beat
 local music
 local sounds = {}
-local C = 255
+local C
 local player = {
 	update = function(self, dt)
 		if self:is_alive() then
@@ -355,7 +355,9 @@ function reset()
 end
 
 function love.load()
+	local major = love.getVersion()
 	WX, WY = love.graphics.getDimensions()
+	C = major < 1 and 1 or 255
 	tacc = 0
 	beat = 0
 	target_beat = 1
