@@ -414,6 +414,9 @@ function love:draw()
 	local t = string.format('%.1f', game_time)
 	love.graphics.print('Score: ' .. player.points, 5, 1, 0, 1, 1)
 	love.graphics.printf('Time: ' .. t, 700, 1, 95, 'right')
+	if not player:is_alive() then
+		love.graphics.printf('Press R to restart', 325, 1, 200, 'center')
+	end
 	love.graphics.translate(0, 16)
 	shack:apply()
 	grid:draw()
