@@ -363,7 +363,9 @@ function gameover()
 		local x = t[1]
 		local y = t[2]
 		local tile = grid:tile(x, y)
-		grid:set_tile(x, y, s, player.c)
+		if tile.s < 0.5 then
+			grid:set_tile(x, y, s, player.c)
+		end
 	end
 end
 
